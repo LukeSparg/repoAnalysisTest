@@ -6,4 +6,4 @@ This repo is purely for testing a repository analysis tool.
 LLOC: 7
 
 ## Test2.java
-LLOC: 9
+LLOC: 12
