@@ -12,7 +12,7 @@ def testFunction():
   5 lines total!
   """
   testVariableNumberTwo = 3
-  testVariableNumberTwo++
+  testVariableNumberTwo += 1
   if testVariableNumberTwo == testVariable:
     #Another Comment
     testVariable = 3
