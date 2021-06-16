@@ -5,7 +5,7 @@ import numpy as np
 testVariable = 1
 
 
-def testFunction:
+def testFunction():
   """
   A docstring for testing
 
