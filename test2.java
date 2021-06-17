@@ -1,22 +1,10 @@
-import java.util.ArrayList;
+// This is a test file with comments only
 
-//A comment
-public class Test {
-  static void myMethod() {
-    System.out.println("/*I just got executed!*/");
-  }
-  /*Testing
-  Testing a block comment
-  Yay*/ static void myMethod2 () {
-    System.out.println("I just got executed again!");
-  }
+/*
+ * Here comes a block comment Second line of block comment Third line of block
+ * comment
+ */
 
-  public static void main(String[] args) {
-    
-    /* Dummy Comment */ float y;
-    
-    myMethod();
-  }
-}
+ //Yet another comment
 
-// Outputs "I just got executed!"
+ //More comments
