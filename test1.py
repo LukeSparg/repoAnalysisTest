@@ -1,4 +1,9 @@
 import numpy as np
+import os
+import collections, itertools
+from math import *
+from gzip import open as gzip_open
+from subprocess import check_output, Popen
 
 #Testing comment
 
