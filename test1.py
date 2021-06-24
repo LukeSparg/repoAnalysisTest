@@ -22,5 +22,7 @@ def testFunction():
   if testVariableNumberTwo == testVariable:
     #Another Comment
     testVariable = 3
-  
+    
+def testFunction2():
+    return 0
   
