@@ -1,4 +1,5 @@
-import numpy as np
+#import numpy as np
+from numpy import *
 import os
 import collections, itertools
 from math import *
