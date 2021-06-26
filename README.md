@@ -20,3 +20,12 @@ NOC: 7
 ## Test2.java
 LLOC: 0
 NOC: 4
+
+### Cyclomatic complexity tests:
+
+## cyclomatic-test-0.py
+CC:4
+
+## cyclomatic-test-0.java
+CC:4
+
