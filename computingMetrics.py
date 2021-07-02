@@ -1,43 +1,36 @@
 from radon.complexity import cc_rank, cc_visit
-result=cc_visit("""
-# Iterative Binary Search Function
-# It returns index of x in given array arr if present,
-# else returns -1
-def binary_search(arr, x):
-    low = 0
-    high = len(arr) - 1
-    mid = 0
- 
-    while low <= high:
- 
-        mid = (high + low) // 2
- 
-        # If x is greater, ignore left half
-        if arr[mid] < x:
-            low = mid + 1
- 
-        # If x is smaller, ignore right half
-        elif arr[mid] > x:
-            high = mid - 1
- 
-        # means x is present at mid
-        else:
-            return mid
- 
-    # If we reach here, then the element was not present
-    return -1
- 
- 
-# Test array
-arr = [ 2, 3, 4, 10, 40 ]
-x = 10
- 
-# Function call
-result = binary_search(arr, x)
- 
-if result != -1:
-    print("Element is present at index", str(result))
-else:
-    print("Element is not present in array")
-""")
+result=cc_visit("""# Quick sort
+
+def partition(arr, low, high):
+    i = (low-1)         # index of smaller element
+    pivot = arr[high]     # pivot
+  
+    for j in range(low, high):
+  
+        # If current element is smaller than or
+        # equal to pivot
+        if arr[j] <= pivot:
+  
+            # increment index of smaller element
+            i = i+1
+            arr[i], arr[j] = arr[j], arr[i]
+  
+    arr[i+1], arr[high] = arr[high], arr[i+1]
+    return (i+1)
+    
+def quickSort(arr, low, high):
+    if len(arr) == 1:
+        return arr
+    if low < high:
+  
+        # pi is partitioning index, arr[p] is now
+        # at right place
+        pi = partition(arr, low, high)
+  
+        # Separately sort elements before
+        # partition and after partition
+        quickSort(arr, low, pi-1)
+        quickSort(arr, pi+1, high)
+
+  """)
 print(result)
