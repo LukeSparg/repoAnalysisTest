@@ -1,7 +1,7 @@
 
 # Iterative Binary Search Function
 # It returns index of x in given array arr present,
-# else returns -1
+# returns -1
 def binary_search(arr, x):
     low = 0
     high = len(arr) - 1
