@@ -1,5 +1,6 @@
 from radon.complexity import cc_rank, cc_visit
-result=cc_visit("""# Quick sort
+result = cc_visit("""
+# Quick sort
 
 def partition(arr, low, high):
     i = (low-1)         # index of smaller element
@@ -17,7 +18,7 @@ def partition(arr, low, high):
   
     arr[i+1], arr[high] = arr[high], arr[i+1]
     return (i+1)
-    
+
 def quickSort(arr, low, high):
     if len(arr) == 1:
         return arr
@@ -31,6 +32,14 @@ def quickSort(arr, low, high):
         # partition and after partition
         quickSort(arr, low, pi-1)
         quickSort(arr, pi+1, high)
+
+# Driver code to test above
+arr = [10, 7, 8, 9, 1, 5]
+n = len(arr)
+quickSort(arr, 0, n-1)
+print("Sorted array is:")
+for i in range(n):
+    print("%d" % arr[i])
 
   """)
 print(result)
