@@ -18,6 +18,7 @@ def partition(arr, low, high):
     return (i+1)
 
 def quickSort(arr, low, high):
+    a=True or False
     if len(arr) == 1:
         return arr
     if low < high:

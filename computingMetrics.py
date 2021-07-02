@@ -1,45 +1,102 @@
 from radon.complexity import cc_rank, cc_visit
 result = cc_visit("""
-# Quick sort
+# audio.py from Real-Time-Voice-Cloning project
+from scipy.ndimage.morphology import binary_dilation
+from encoder.params_data import *
+from pathlib import Path
+from typing import Optional, Union
+from warnings import warn
+import numpy as np
+import librosa
+import struct
 
-def partition(arr, low, high):
-    i = (low-1)         # index of smaller element
-    pivot = arr[high]     # pivot
-  
-    for j in range(low, high):
-  
-        # If current element is smaller than or
-        # equal to pivot
-        if arr[j] <= pivot:
-  
-            # increment index of smaller element
-            i = i+1
-            arr[i], arr[j] = arr[j], arr[i]
-  
-    arr[i+1], arr[high] = arr[high], arr[i+1]
-    return (i+1)
+try:
+    import webrtcvad
+except:
+    warn("Unable to import 'webrtcvad'. This package enables noise removal and is recommended.")
+    webrtcvad=None
 
-def quickSort(arr, low, high):
-    if len(arr) == 1:
-        return arr
-    if low < high:
-  
-        # pi is partitioning index, arr[p] is now
-        # at right place
-        pi = partition(arr, low, high)
-  
-        # Separately sort elements before
-        # partition and after partition
-        quickSort(arr, low, pi-1)
-        quickSort(arr, pi+1, high)
+int16_max = (2 ** 15) - 1
 
-# Driver code to test above
-arr = [10, 7, 8, 9, 1, 5]
-n = len(arr)
-quickSort(arr, 0, n-1)
-print("Sorted array is:")
-for i in range(n):
-    print("%d" % arr[i])
+
+def preprocess_wav(fpath_or_wav: Union[str, Path, np.ndarray],
+                   source_sr: Optional[int] = None,
+                   normalize: Optional[bool] = True,
+                   trim_silence: Optional[bool] = True):
+    # Load the wav from disk if needed
+    if isinstance(fpath_or_wav, str) or isinstance(fpath_or_wav, Path):
+        wav, source_sr = librosa.load(str(fpath_or_wav), sr=None)
+    else:
+        wav = fpath_or_wav
+    
+    # Resample the wav if needed
+    if source_sr is not None and source_sr != sampling_rate:
+        wav = librosa.resample(wav, source_sr, sampling_rate)
+        
+    # Apply the preprocessing: normalize volume and shorten long silences 
+    if normalize:
+        wav = normalize_volume(wav, audio_norm_target_dBFS, increase_only=True)
+    if webrtcvad and trim_silence:
+        wav = trim_long_silences(wav)
+    
+    return wav
+
+
+def wav_to_mel_spectrogram(wav):
+
+    frames = librosa.feature.melspectrogram(
+        wav,
+        sampling_rate,
+        n_fft=int(sampling_rate * mel_window_length / 1000),
+        hop_length=int(sampling_rate * mel_window_step / 1000),
+        n_mels=mel_n_channels
+    )
+    return frames.astype(np.float32).T
+
+
+def trim_long_silences(wav):
+    # Compute the voice detection window size
+    samples_per_window = (vad_window_length * sampling_rate) // 1000
+    
+    # Trim the end of the audio to have a multiple of the window size
+    wav = wav[:len(wav) - (len(wav) % samples_per_window)]
+    
+    # Convert the float waveform to 16-bit mono PCM
+    pcm_wave = struct.pack("%dh" % len(wav), *(np.round(wav * int16_max)).astype(np.int16))
+    
+    # Perform voice activation detection
+    voice_flags = []
+    vad = webrtcvad.Vad(mode=3)
+    for window_start in range(0, len(wav), samples_per_window):
+        window_end = window_start + samples_per_window
+        voice_flags.append(vad.is_speech(pcm_wave[window_start * 2:window_end * 2],
+                                         sample_rate=sampling_rate))
+    voice_flags = np.array(voice_flags)
+    
+    # Smooth the voice detection with a moving average
+    def moving_average(array, width):
+        array_padded = np.concatenate((np.zeros((width - 1) // 2), array, np.zeros(width // 2)))
+        ret = np.cumsum(array_padded, dtype=float)
+        ret[width:] = ret[width:] - ret[:-width]
+        return ret[width - 1:] / width
+    
+    audio_mask = moving_average(voice_flags, vad_moving_average_width)
+    audio_mask = np.round(audio_mask).astype(np.bool)
+    
+    # Dilate the voiced regions
+    audio_mask = binary_dilation(audio_mask, np.ones(vad_max_silence_length + 1))
+    audio_mask = np.repeat(audio_mask, samples_per_window)
+    
+    return wav[audio_mask == True]
+
+
+def normalize_volume(wav, target_dBFS, increase_only=False, decrease_only=False):
+    if increase_only and decrease_only:
+        raise ValueError("Both increase only and decrease only are set")
+    dBFS_change = target_dBFS - 10 * np.log10(np.mean(wav ** 2))
+    if (dBFS_change < 0 and increase_only) or (dBFS_change > 0 and decrease_only):
+        return wav
+    return wav * (10 ** (dBFS_change / 20))
 
   """)
 print(result)
