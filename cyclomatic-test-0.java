@@ -39,5 +39,7 @@ class BinarySearch {
         else if (result!=0)
             System.out.println("Element found at "
                                + "index " + result);
+        else if (result==5)
+            System.out.println("here");
     }
 }
