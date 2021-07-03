@@ -41,5 +41,17 @@ class BinarySearch {
                                + "index " + result);
         else if (result==5)
             System.out.println("here");
+        
+        x=1;
+        switch (x){
+            case 1:
+                System.out.println("1");
+                break;
+            case 2:
+                System.out.println("2");
+                break;
+            default:
+                System.out.println();
+        }
     }
 }
