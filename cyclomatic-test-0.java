@@ -36,7 +36,7 @@ class BinarySearch {
         int result = ob.binarySearch(arr, x);
         if (result == -1)
             System.out.println("Element not present");
-        else if (true)
+        else if (result!=0)
             System.out.println("Element found at "
                                + "index " + result);
     }
