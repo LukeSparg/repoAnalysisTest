@@ -4,6 +4,8 @@ This repo is purely for testing a repository analysis tool.
 
 LLOC - Logical Lines Of Code
 NOC - Number Of Comments
+CC - Cyclomatic Complexity
+TC - Test Cases
 
 ## Test1.py
 LLOC: 7
@@ -28,4 +30,12 @@ CC:4
 
 ## cyclomatic-test-0.java
 CC:4
+
+### Count Test Cases Tests:
+
+## test-case-test-0.py
+TC:3
+
+## test-case-test-0.java
+TC:4
 
