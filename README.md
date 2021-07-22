@@ -34,7 +34,7 @@ CC:4
 ### Count Test Cases Tests:
 
 ## test-case-test-0.py
-TC:3
+TC:4
 
 ## test-case-test-0.java
 TC:4
